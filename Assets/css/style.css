@@ -1,0 +1,49 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --font-dark: black;
+  --font-light: cyan;
+
+  --main-bg: black;
+  --box-ph-bg: grey;
+}
+
+body {
+  margin-top: 1em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  color: var(--font-light);
+  background-color: var(--font-dark);
+}
+
+header {
+  width: 100%;
+  margin-bottom: 4em;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 3em;
+}
+
+#high-score {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+#timer {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+#question {
+  width: 100%;
+  font-size: 2em;
+  margin-bottom: 3em;
+}
