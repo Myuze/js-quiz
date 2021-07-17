@@ -24,6 +24,8 @@
 
 // Quiz Page Elements
 var timerEl = document.getElementById('timer');
+var questEl = document.getElementById('question');
+var answerEl = document.getElementById('answer');
 
 // Timer Object
 var timer = {
@@ -58,28 +60,103 @@ var timer = {
   },
   
   startTimer: function() {
-    var secondsRemaining = this.startTime;
-    console.log(secondsRemaining)
-    
+
+    var secondsRemaining = this.startTime; 
     var timerInterval = setInterval(function() {
+
       secondsRemaining--;
 
-      var formattedTime = this.timer.formatTimer(secondsRemaining);
+      var formattedTime = timer.formatTimer(secondsRemaining);
       
       timerEl.textContent = formattedTime;
 
       if(secondsRemaining < 1) {
         clearInterval(timerInterval);
 
-        this.timer.endTimer();
+        timer.endTimer();
       }
 
     }, 1000);
   },
 
   endTimer() {
+    answerEl.textContent = "GAME OVER!!!"
 
   }
 }
 
+// Question Generator Object
+var questionsGenerator = {
+
+  // Array of Question dictionaries
+  questions: [
+
+    // Dictionaries of question and answers
+    {
+      question: "Which of the following is JSON most like?",
+      answer: "List",
+      wAnswer: [
+        "Dictionary",
+        "Function",
+        "Array"
+      ],
+    },
+  
+    {
+      question: "Which is NOT a primitive type?",
+      answer: "Object",
+      wAnswer: [
+        "String",
+        "Number",
+        "Bool",
+      ]
+    }
+  ],
+
+  createAnswerList: function(questionDict) {
+    var ansList = [];
+
+    Object.entries(questionDict).forEach(entry => {
+
+      if (entry[0] == 'answer') {
+
+        ansList.push(entry[1]);
+
+      } else if (entry[0] == 'wAnswer') {
+
+        entry[1].forEach(element => {
+          ansList.push(element);
+        });
+      }
+    })
+    
+    return ansList;
+  },
+
+  shuffleAnswers: function(array) {
+
+    var currentIndex = array.length, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+  },
+
+  getRandomQuestion: function() {
+    var randQ = this.questions[Math.floor(Math.random() * this.questions.length)];
+    questEl.textContent = randQ.question;
+    
+    var ansList = this.createAnswerList(randQ);
+    var shuffledAnswers = this.shuffleAnswers(ansList);
+
+    answerEl.textContent = shuffledAnswers;
+  }
+}
+
+questionsGenerator.getRandomQuestion();
 timer.startTimer();
