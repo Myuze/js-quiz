@@ -22,6 +22,64 @@
 
 // I can save my initials and score
 
-function startTimer() {
+// Quiz Page Elements
+var timerEl = document.getElementById('timer');
+
+// Timer Object
+var timer = {
+  startTime: 180,
+
+  // Display timer as "00:00" format
+  formatTimer: function(timeInSeconds) {
+    var min = '00';
+    var sec = '00';
+
+    if (timeInSeconds > 60) {
+      min = Math.floor(timeInSeconds / 60);
+      sec = Math.floor(timeInSeconds % 60);
+
+    } else {
+      min = '0'
+      sec = timeInSeconds;
+    }
+
+    // Add leading zero to min or sec if less than 10
+    if (min < 10) {
+      min = `0${min}`;
+    }
+
+    if (sec < 10) {
+      sec = `0${sec}`;
+    }
+
+    var time = `${min}:${sec}`;
+    
+    return time;
+  },
   
+  startTimer: function() {
+    var secondsRemaining = this.startTime;
+    console.log(secondsRemaining)
+    
+    var timerInterval = setInterval(function() {
+      secondsRemaining--;
+
+      var formattedTime = this.timer.formatTimer(secondsRemaining);
+      
+      timerEl.textContent = formattedTime;
+
+      if(secondsRemaining < 1) {
+        clearInterval(timerInterval);
+
+        this.timer.endTimer();
+      }
+
+    }, 1000);
+  },
+
+  endTimer() {
+
+  }
 }
+
+timer.startTimer();
