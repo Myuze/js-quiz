@@ -2,9 +2,9 @@
 
 // Click a button to start the quiz
 
-// Timer starts counting down
+// Timer starts counting down 
 
-// Page Shows a random question with a list of answers
+// Page Shows a random question with a list of answers DONE
 
 // When I select an answer the correct answer is highlighted green
 // and "Correct" appears at the bottom of the list"
@@ -25,11 +25,13 @@
 // Quiz Page Elements
 var timerEl = document.getElementById('timer');
 var questEl = document.getElementById('question');
-var answerEl = document.getElementById('answer');
+var answerContainer = document.getElementById('answer-container');
+var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
   startTime: 180,
+  secToSubtract: 5,
 
   // Display timer as "00:00" format
   formatTimer: function(timeInSeconds) {
@@ -60,10 +62,9 @@ var timer = {
   },
   
   startTimer: function() {
-
     var secondsRemaining = this.startTime; 
-    var timerInterval = setInterval(function() {
 
+    var timerInterval = setInterval(function() {
       secondsRemaining--;
 
       var formattedTime = timer.formatTimer(secondsRemaining);
@@ -79,9 +80,14 @@ var timer = {
     }, 1000);
   },
 
-  endTimer() {
-    answerEl.textContent = "GAME OVER!!!"
+  endTimer: function() {
+    var answerTitle = document.createElement('h3');
+    answerTitle.textContent = "GAME OVER!!!";
+    answerContainer.prepend(answerTitle);
+  },
 
+  subtractTime: function(secToSubtract) {
+    // Subract Time
   }
 }
 
@@ -110,6 +116,36 @@ var questionsGenerator = {
         "Number",
         "Bool",
       ]
+    },
+
+    {
+      question: "What can be considered an integer?",
+      answer: "Object",
+      wAnswer: [
+        "String",
+        "Number",
+        "Bool",
+      ]
+    },
+
+    {
+      question: "What what cannot be used to change font-size?",
+      answer: "fr",
+      wAnswer: [
+        "em",
+        "rem",
+        "px",
+      ]
+    },
+
+    {
+      question: "What is not a property of a background",
+      answer: "background-action",
+      wAnswer: [
+        "margin",
+        "color",
+        "background-size",
+      ]
     }
   ],
 
@@ -117,24 +153,27 @@ var questionsGenerator = {
     var ansList = [];
 
     Object.entries(questionDict).forEach(entry => {
-
       if (entry[0] == 'answer') {
-
         ansList.push(entry[1]);
 
       } else if (entry[0] == 'wAnswer') {
-
         entry[1].forEach(element => {
           ansList.push(element);
         });
       }
     })
+
+    var shuffledAnswers = this.shuffleAnswers(ansList);
     
-    return ansList;
+    shuffledAnswers.forEach(entry => {
+      var ansItem = document.createElement('li');
+      var ansText = document.createTextNode(entry);
+      ansItem.appendChild(ansText);
+      answerListEl.appendChild(ansItem);
+    });
   },
 
   shuffleAnswers: function(array) {
-
     var currentIndex = array.length, randomIndex;
 
     while (0 !== currentIndex) {
@@ -150,11 +189,7 @@ var questionsGenerator = {
   getRandomQuestion: function() {
     var randQ = this.questions[Math.floor(Math.random() * this.questions.length)];
     questEl.textContent = randQ.question;
-    
-    var ansList = this.createAnswerList(randQ);
-    var shuffledAnswers = this.shuffleAnswers(ansList);
-
-    answerEl.textContent = shuffledAnswers;
+    this.createAnswerList(randQ);
   }
 }
 

@@ -13,16 +13,17 @@
 }
 
 body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-flow: column wrap;
   margin-top: 1em;
   font-family: Arial, Helvetica, sans-serif;
-  text-align: center;
   color: var(--font-light);
   background-color: var(--font-dark);
 }
 
 header {
-  width: 100%;
-  margin-bottom: 4em;
+  margin-bottom: 1em;
   text-align: center;
 }
 
@@ -43,7 +44,34 @@ header h1 {
 }
 
 #question {
-  width: 100%;
+  text-align: center;
   font-size: 2em;
   margin-bottom: 3em;
+}
+
+#answer-container {
+  margin: 2em auto 1em;
+  width: 50ch;
+}
+
+#answer-container h3 {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+li {
+  color: black;
+  background-color: rgb(246, 177, 255);
+  font-size: 1.5em;
+  margin: 0.5em auto;
+  padding-left: 3ch;
+  align-self: left;
+  width: 70%;
+  min-width: 20ch;
+  border: 3px solid rebeccapurple;
+  border-radius: 0.3rem;
+}
+
+ul {
+  list-style-type: none;
 }
