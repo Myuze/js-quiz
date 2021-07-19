@@ -26,11 +26,12 @@
 var timerEl = document.getElementById('timer');
 var questEl = document.getElementById('question');
 var answerContainer = document.getElementById('answer-container');
+var answerTitle = document.getElementById('answer-title');
 var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
-  startTime: 120,
+  startTime: 60,
   secToSubtract: 5,
 
   // Display timer as "00:00" format
@@ -81,15 +82,14 @@ var timer = {
   },
 
   endTimer: function() {
-    var answerTitle = document.createElement('h3');
     answerTitle.textContent = "QUIZ OVER!!!";
     questEl.remove();
     answerListEl.remove();
     answerContainer.prepend(answerTitle);
   },
 
-  subtractTime: function(secToSubtract) {
-    // Subract Time
+  subtractTime: function() {
+    console.log('Time Subtracted')
   }
 }
 
@@ -151,6 +151,12 @@ var questionsGenerator = {
     }
   ],
 
+  gameStart: function() {
+    timer.startTimer();
+    var question = questionsGenerator.getRandomQuestion();
+    answerEvents.addAnswerClickHandler(answerListEl, question);
+  },
+
   createAnswerList: function(questionDict) {
     var ansList = [];
 
@@ -202,6 +208,9 @@ var answerEvents = {
     ansElem.addEventListener('click', function(e) {
       if (e.target.textContent === question['answer']) {
         console.log('CORRECT!!!')
+        answerTitle.textContent = "CORRECT!!!";
+        return true;
+
       } else {
         timer.subtractTime();
       }
@@ -209,8 +218,10 @@ var answerEvents = {
   }
 }
 
-timer.startTimer();
-var question = questionsGenerator.getRandomQuestion();
-answerEvents.addAnswerClickHandler(answerListEl, question);
-// answerListEl.addEventListener('click', answerEvents.processAnswerEvent, question);
+var startButton = document.createElement('button');
+startButton.classList.add('start');
+startButton.textContent = 'START QUIZ';
+questEl.appendChild(startButton);
+startButton.addEventListener('click', questionsGenerator.gameStart);
+
 
