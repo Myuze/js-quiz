@@ -32,6 +32,7 @@ var answerListEl = document.getElementById('answer-list');
 // Timer Object
 var timer = {
   startTime: 60,
+  currentTimeLeft: NaN,
   secToSubtract: 5,
 
   // Display timer as "00:00" format
@@ -44,8 +45,12 @@ var timer = {
       sec = Math.floor(timeInSeconds % 60);
 
     } else {
-      min = '0'
-      sec = timeInSeconds;
+      min = '0';
+      if (timeInSeconds < 1) {
+        sec = '0';
+      } else {
+        sec = timeInSeconds;
+      }
     }
 
     // Add leading zero to min or sec if less than 10
@@ -61,18 +66,26 @@ var timer = {
     
     return time;
   },
+
+  setTimer: function() {
+    this.currentTimeLeft = this.startTime;
+    console.log(this.currentTimeLeft)
+  },
   
   startTimer: function() {
-    var secondsRemaining = this.startTime; 
+    // var secondsRemaining = this.currentTimeLeft; 
+
+    console.log(this.currentTimeLeft)
 
     var timerInterval = setInterval(function() {
-      secondsRemaining--;
+      timer.currentTimeLeft--;
 
-      var formattedTime = timer.formatTimer(secondsRemaining);
+      var formattedTime = timer.formatTimer(timer.currentTimeLeft);
+      console.log('formatTime :', formattedTime)
       
       timerEl.textContent = formattedTime;
 
-      if(secondsRemaining < 1) {
+      if(timer.currentTimeLeft < 1) {
         clearInterval(timerInterval);
 
         timer.endTimer();
@@ -90,6 +103,8 @@ var timer = {
 
   subtractTime: function() {
     console.log('Time Subtracted')
+    this.currentTimeLeft -= this.secToSubtract;
+    console.log('currentSecLeft: ', this.currentTimeLeft)
   }
 }
 
@@ -152,6 +167,7 @@ var questionsGenerator = {
   ],
 
   gameStart: function() {
+    timer.setTimer();
     timer.startTimer();
     var question = questionsGenerator.getRandomQuestion();
     answerEvents.addAnswerClickHandler(answerListEl, question);
@@ -196,7 +212,6 @@ var questionsGenerator = {
 
   getRandomQuestion: function() {
     var randQ = this.questions.splice(Math.floor(Math.random() * this.questions.length), 1);
-    console.log(randQ)
     questEl.textContent = randQ[0]['question'];
     this.createAnswerList(randQ[0]);
     return randQ[0];
