@@ -69,19 +69,13 @@ var timer = {
 
   setTimer: function() {
     this.currentTimeLeft = this.startTime;
-    console.log(this.currentTimeLeft)
   },
   
   startTimer: function() {
-    // var secondsRemaining = this.currentTimeLeft; 
-
-    console.log(this.currentTimeLeft)
-
     var timerInterval = setInterval(function() {
       timer.currentTimeLeft--;
 
       var formattedTime = timer.formatTimer(timer.currentTimeLeft);
-      console.log('formatTime :', formattedTime)
       
       timerEl.textContent = formattedTime;
 
@@ -104,7 +98,6 @@ var timer = {
   subtractTime: function() {
     console.log('Time Subtracted')
     this.currentTimeLeft -= this.secToSubtract;
-    console.log('currentSecLeft: ', this.currentTimeLeft)
   }
 }
 
@@ -169,8 +162,9 @@ var questionsGenerator = {
   gameStart: function() {
     timer.setTimer();
     timer.startTimer();
+
     var question = questionsGenerator.getRandomQuestion();
-    answerEvents.addAnswerClickHandler(answerListEl, question);
+    var qAnswer = answerEvents.addAnswerClickHandler(answerListEl, question);  
   },
 
   createAnswerList: function(questionDict) {

@@ -10,6 +10,9 @@
 
   --main-bg: black;
   --box-ph-bg: grey;
+
+  --box-bg: rgb(157, 240, 240);
+  --box-border: rgb(0, 60, 255);
 }
 
 body {
@@ -61,7 +64,7 @@ header h1 {
 
 li {
   color: black;
-  background-color: rgb(246, 177, 255);
+  background-color: var(--box-bg);
   font-size: 1.5em;
   margin: 0.5em auto;
   padding-left: 3ch;
