@@ -30,7 +30,7 @@ var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
-  startTime: 180,
+  startTime: 120,
   secToSubtract: 5,
 
   // Display timer as "00:00" format
@@ -82,7 +82,9 @@ var timer = {
 
   endTimer: function() {
     var answerTitle = document.createElement('h3');
-    answerTitle.textContent = "GAME OVER!!!";
+    answerTitle.textContent = "QUIZ OVER!!!";
+    questEl.remove();
+    answerListEl.remove();
     answerContainer.prepend(answerTitle);
   },
 
@@ -100,7 +102,7 @@ var questionsGenerator = {
     // Dictionaries of question and answers
     {
       question: "Which of the following is JSON most like?",
-      answer: "List",
+      answer: "Object",
       wAnswer: [
         "Dictionary",
         "Function",
@@ -120,10 +122,10 @@ var questionsGenerator = {
 
     {
       question: "What can be considered an integer?",
-      answer: "Object",
+      answer: "Number",
       wAnswer: [
         "String",
-        "Number",
+        "Object",
         "Bool",
       ]
     },
@@ -187,11 +189,28 @@ var questionsGenerator = {
   },
 
   getRandomQuestion: function() {
-    var randQ = this.questions[Math.floor(Math.random() * this.questions.length)];
-    questEl.textContent = randQ.question;
-    this.createAnswerList(randQ);
+    var randQ = this.questions.splice(Math.floor(Math.random() * this.questions.length), 1);
+    console.log(randQ)
+    questEl.textContent = randQ[0]['question'];
+    this.createAnswerList(randQ[0]);
+    return randQ[0];
   }
 }
 
-questionsGenerator.getRandomQuestion();
+var answerEvents = {
+  addAnswerClickHandler: function(ansElem, question) {
+    ansElem.addEventListener('click', function(e) {
+      if (e.target.textContent === question['answer']) {
+        console.log('CORRECT!!!')
+      } else {
+        timer.subtractTime();
+      }
+    });
+  }
+}
+
 timer.startTimer();
+var question = questionsGenerator.getRandomQuestion();
+answerEvents.addAnswerClickHandler(answerListEl, question);
+// answerListEl.addEventListener('click', answerEvents.processAnswerEvent, question);
+
