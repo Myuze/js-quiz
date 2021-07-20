@@ -31,7 +31,7 @@ var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
-  startTime: 10,
+  startTime: 120,
   currentTimeLeft: NaN,
   secToSubtract: 5,
 
@@ -82,19 +82,10 @@ var timer = {
       if(timer.currentTimeLeft < 1) {
         clearInterval(timerInterval);
 
-        timer.timerEnd();
+        main.endScreen();
       }
 
     }, 1000);
-  },
-
-  timerEnd: function() {
-    answerTitle.textContent = "QUIZ OVER!!!";
-    setTimeout(function() {
-      questEl.remove();
-      answerListEl.remove();
-      answerContainer.prepend(answerTitle);
-    }, 3000);
   },
 
   subtractTime: function() {
@@ -166,7 +157,7 @@ var questionsGenerator = {
     timer.startTimer();
 
     var question = questionsGenerator.getRandomQuestion();
-    var result = answerEvents.addAnswerClickHandler(answerListEl, question);  
+    var result = answerEvents.addAnswerClickHandler(answerListEl, question);
   },
 
   createAnswerList: function(questionDict) {
@@ -218,31 +209,36 @@ var answerEvents = {
   addAnswerClickHandler: function(ansElem, question) {
     ansElem.addEventListener('click', function(e) {
       if (e.target.textContent === question['answer']) {
-        console.log('CORRECT!!!')
+        score.addScore();
+        questEl.remove();
+        answerListEl.remove();
         answerTitle.textContent = "CORRECT!!!";
+       
         return true;
 
       } else {
         timer.subtractTime();
+        
         return false;
       }
     });
   }
 }
 
-var scoreScreen = {
+var score = {
+  qValue: 10,
   score: 0, 
 
   show: function() {
-    var 
+    answerTitle.textContent = `Your Score Was: ${this.score}`;
   },
 
   addScore: function() {
-
+    this.score += this.qValue;
   },
 
   resetScore: function() {
-
+    this.score = 0;
   },
 
   viewScoreScreen: function() {
@@ -257,7 +253,16 @@ var main = {
     startButton.textContent = 'START QUIZ';
     questEl.appendChild(startButton);
     startButton.addEventListener('click', questionsGenerator.gameStart);
-  }
+  },
+
+  endScreen: function() {
+    answerTitle.textContent = "QUIZ OVER!!!";
+    setTimeout(function() {
+      questEl.remove();
+      answerListEl.remove();
+      score.show();
+    }, 3000);
+  },
 }
 
 main.startScreen();
