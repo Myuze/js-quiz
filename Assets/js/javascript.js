@@ -156,8 +156,7 @@ var questionsGenerator = {
     timer.setTimer();
     timer.startTimer();
 
-    var question = questionsGenerator.getRandomQuestion();
-    var result = answerEvents.addAnswerClickHandler(answerListEl, question);
+    questionsGenerator.getRandomQuestions();
   },
 
   createAnswerList: function(questionDict) {
@@ -197,11 +196,27 @@ var questionsGenerator = {
     return array;
   },
 
-  getRandomQuestion: function() {
+  getRandomQuestions: function() {
     var randQ = this.questions.splice(Math.floor(Math.random() * this.questions.length), 1);
-    questEl.textContent = randQ[0]['question'];
-    this.createAnswerList(randQ[0]);
-    return randQ[0];
+    console.log(randQ);
+    if (randQ[0]) {
+      questEl.textContent = randQ[0]['question'];
+      this.createAnswerList(randQ[0]);
+      answerEvents.addAnswerClickHandler(answerListEl, randQ[0]);
+    } else {
+      main.endScreen();
+    }
+  },
+
+  clearQuestAns: function() {
+    questEl.remove();
+    answerListEl.remove();
+  },
+
+  clearAnswers: function() {
+    while (answerListEl.firstChild) {
+      answerListEl.removeChild(answerListEl.firstChild);
+    }
   }
 }
 
@@ -210,16 +225,13 @@ var answerEvents = {
     ansElem.addEventListener('click', function(e) {
       if (e.target.textContent === question['answer']) {
         score.addScore();
-        questEl.remove();
-        answerListEl.remove();
+        questionsGenerator.clearAnswers();
+        questionsGenerator.getRandomQuestions();
         answerTitle.textContent = "CORRECT!!!";
-       
-        return true;
 
       } else {
         timer.subtractTime();
-        
-        return false;
+        answerTitle.textContent = `WRONG!!! -${timer.secToSubtract}sec`;
       }
     });
   }
@@ -258,8 +270,7 @@ var main = {
   endScreen: function() {
     answerTitle.textContent = "QUIZ OVER!!!";
     setTimeout(function() {
-      questEl.remove();
-      answerListEl.remove();
+      questionsGenerator.clearQuestAns();
       score.show();
     }, 3000);
   },
