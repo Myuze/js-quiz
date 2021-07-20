@@ -1,18 +1,18 @@
-// Initialize with a dynamic start page with Start Button
+// DONE Initialize with a dynamic start page with Start Button
 
-// Click a button to start the quiz
+// DONE Click a button to start the quiz
 
-// Timer starts counting down 
+// DONE Timer starts counting down 
 
-// Page Shows a random question with a list of answers DONE
+// DONE Page Shows a random question with a list of answers randomized
 
 // When I select an answer the correct answer is highlighted green
-// and "Correct" appears at the bottom of the list"
+// DONE and "Correct" appears at the bottom of the list"
 
 // IF I select the wrong answer, the correct answer is highlighted green
 // and the wrong answer turns red
-// and "wrong" appears at the bottom of the list
-// and time is subtracted from the clock
+// DONE and "wrong" appears at the bottom of the list
+// DONE and time is subtracted from the clock
 
 // After each answer I am presented with another question until the end of the quiz
 // or time runs out
@@ -31,7 +31,7 @@ var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
-  startTime: 60,
+  startTime: 10,
   currentTimeLeft: NaN,
   secToSubtract: 5,
 
@@ -82,17 +82,19 @@ var timer = {
       if(timer.currentTimeLeft < 1) {
         clearInterval(timerInterval);
 
-        timer.endTimer();
+        timer.timerEnd();
       }
 
     }, 1000);
   },
 
-  endTimer: function() {
+  timerEnd: function() {
     answerTitle.textContent = "QUIZ OVER!!!";
-    questEl.remove();
-    answerListEl.remove();
-    answerContainer.prepend(answerTitle);
+    setTimeout(function() {
+      questEl.remove();
+      answerListEl.remove();
+      answerContainer.prepend(answerTitle);
+    }, 3000);
   },
 
   subtractTime: function() {
@@ -164,7 +166,7 @@ var questionsGenerator = {
     timer.startTimer();
 
     var question = questionsGenerator.getRandomQuestion();
-    var qAnswer = answerEvents.addAnswerClickHandler(answerListEl, question);  
+    var result = answerEvents.addAnswerClickHandler(answerListEl, question);  
   },
 
   createAnswerList: function(questionDict) {
@@ -222,15 +224,42 @@ var answerEvents = {
 
       } else {
         timer.subtractTime();
+        return false;
       }
     });
   }
 }
 
-var startButton = document.createElement('button');
-startButton.classList.add('start');
-startButton.textContent = 'START QUIZ';
-questEl.appendChild(startButton);
-startButton.addEventListener('click', questionsGenerator.gameStart);
+var scoreScreen = {
+  score: 0, 
+
+  show: function() {
+    var 
+  },
+
+  addScore: function() {
+
+  },
+
+  resetScore: function() {
+
+  },
+
+  viewScoreScreen: function() {
+
+  }
+}
+
+var main = {
+  startScreen: function() {
+    var startButton = document.createElement('button');
+    startButton.classList.add('start');
+    startButton.textContent = 'START QUIZ';
+    questEl.appendChild(startButton);
+    startButton.addEventListener('click', questionsGenerator.gameStart);
+  }
+}
+
+main.startScreen();
 
 
