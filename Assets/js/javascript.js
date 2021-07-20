@@ -1,24 +1,8 @@
-// DONE Initialize with a dynamic start page with Start Button
-
-// DONE Click a button to start the quiz
-
-// DONE Timer starts counting down 
-
-// DONE Page Shows a random question with a list of answers randomized
-
 // When I select an answer the correct answer is highlighted green
-// DONE and "Correct" appears at the bottom of the list"
 
 // IF I select the wrong answer, the correct answer is highlighted green
 // and the wrong answer turns red
-// DONE and "wrong" appears at the bottom of the list
-// DONE and time is subtracted from the clock
 
-// After each answer I am presented with another question until the end of the quiz
-// or time runs out
-
-// Show Game Over at the end
-// Show final score
 
 // I can save my initials and score
 
@@ -46,8 +30,10 @@ var timer = {
 
     } else {
       min = '0';
+
       if (timeInSeconds < 1) {
         sec = '0';
+
       } else {
         sec = timeInSeconds;
       }
@@ -67,7 +53,7 @@ var timer = {
     return time;
   },
 
-  setTimer: function() {
+  initTimer: function() {
     this.currentTimeLeft = this.startTime;
   },
   
@@ -77,7 +63,7 @@ var timer = {
 
       var formattedTime = timer.formatTimer(timer.currentTimeLeft);
       
-      timerEl.textContent = formattedTime;
+      timerEl.textContent = `Time: ${formattedTime}`;
 
       if(timer.currentTimeLeft < 1) {
         clearInterval(timerInterval);
@@ -91,6 +77,10 @@ var timer = {
   subtractTime: function() {
     console.log('Time Subtracted')
     this.currentTimeLeft -= this.secToSubtract;
+  },
+
+  endTimer: function() {
+
   }
 }
 
@@ -153,12 +143,13 @@ var questionsGenerator = {
   ],
 
   gameStart: function() {
-    timer.setTimer();
+    timer.initTimer();
     timer.startTimer();
 
     questionsGenerator.getRandomQuestions();
   },
 
+  // Create answer list elements then shuffle
   createAnswerList: function(questionDict) {
     var ansList = [];
 
@@ -198,11 +189,12 @@ var questionsGenerator = {
 
   getRandomQuestions: function() {
     var randQ = this.questions.splice(Math.floor(Math.random() * this.questions.length), 1);
-    console.log(randQ);
+
     if (randQ[0]) {
       questEl.textContent = randQ[0]['question'];
       this.createAnswerList(randQ[0]);
       answerEvents.addAnswerClickHandler(answerListEl, randQ[0]);
+
     } else {
       main.endScreen();
     }
@@ -220,6 +212,7 @@ var questionsGenerator = {
   }
 }
 
+// Object to create event listeners to answers in list
 var answerEvents = {
   addAnswerClickHandler: function(ansElem, question) {
     ansElem.addEventListener('click', function(e) {
@@ -237,20 +230,35 @@ var answerEvents = {
   }
 }
 
+// Score Object to track and store scores
 var score = {
   qValue: 10,
-  score: 0, 
+  player: {
+    playerInitials: "",
+    playerScore: 0
+  },
 
   show: function() {
-    answerTitle.textContent = `Your Score Was: ${this.score}`;
+    answerTitle.textContent = `Your Score Was: ${this.player['playerScore']}`;
   },
 
   addScore: function() {
-    this.score += this.qValue;
+    this.player['playerScore'] += this.qValue;
   },
 
   resetScore: function() {
     this.score = 0;
+  },
+
+  recordInitials: function() {
+    var submitBtn = document.createElement('button');
+    var playerData = this.player;
+    submitBtn.textContent = 'Submit';
+    answerContainer.appendChild(submitBtn);
+
+    submitBtn.addEventListener('click', function() {
+    localStorage.setItem('player', JSON.stringify(playerData));
+    });
   },
 
   viewScoreScreen: function() {
@@ -258,7 +266,9 @@ var score = {
   }
 }
 
+// Main Program
 var main = {
+  // Starting Page
   startScreen: function() {
     var startButton = document.createElement('button');
     startButton.classList.add('start');
@@ -267,12 +277,14 @@ var main = {
     startButton.addEventListener('click', questionsGenerator.gameStart);
   },
 
+
   endScreen: function() {
     answerTitle.textContent = "QUIZ OVER!!!";
     setTimeout(function() {
       questionsGenerator.clearQuestAns();
       score.show();
     }, 3000);
+    score.recordInitials();
   },
 }
 

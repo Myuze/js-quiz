@@ -46,6 +46,12 @@ header h1 {
   right: 0;
 }
 
+.start {
+  padding: 1em;
+  background-color: var(--box-bg);
+  border-radius: 20px;
+}
+
 #question {
   text-align: center;
   font-size: 2em;
@@ -73,6 +79,10 @@ li {
   min-width: 20ch;
   border: 3px solid rebeccapurple;
   border-radius: 0.3rem;
+}
+
+li:hover {
+  filter: opacity(70%);
 }
 
 ul {
