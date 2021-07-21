@@ -15,7 +15,7 @@ var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
-  startTime: 120,
+  startTime: 8,
   currentTimeLeft: NaN,
   secToSubtract: 5,
   timerInterval: Object,
@@ -61,7 +61,6 @@ var timer = {
   startTimer: function() {
     this.timerInterval = setInterval(function() {
       timer.currentTimeLeft--;
-      console.log(timer.currentTimeLeft)
   
       var formattedTime = timer.formatTimer(timer.currentTimeLeft);
       
@@ -77,7 +76,6 @@ var timer = {
   },
 
   subtractTime: function() {
-    console.log('Time Subtracted')
     this.currentTimeLeft -= this.secToSubtract;
   },
 
@@ -272,7 +270,9 @@ var score = {
     },
 
   viewScoreScreen: function() {
-    this.recordInitials()
+    questionsGenerator.clearQuestAns();
+    this.show();
+    this.recordInitials();
   }
 }
 
@@ -292,10 +292,8 @@ var main = {
     timer.endTimer();
     answerTitle.textContent = "QUIZ OVER!!!";
     setTimeout(function() {
-      questionsGenerator.clearQuestAns();
-      score.show();
+      score.viewScoreScreen();
     }, 3000);
-    score.recordInitials();
   },
 }
 

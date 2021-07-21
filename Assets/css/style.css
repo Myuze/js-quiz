@@ -58,12 +58,13 @@ header h1 {
   margin-bottom: 3em;
 }
 
+#answer-title {
+  margin-bottom: 1em;
+}
+
 #answer-container {
   margin: 2em auto 1em;
   width: 50ch;
-}
-
-#answer-container h3 {
   text-align: center;
   margin-bottom: 2em;
 }
@@ -74,7 +75,7 @@ li {
   font-size: 1.5em;
   margin: 0.5em auto;
   padding-left: 3ch;
-  align-self: left;
+  text-align: left;
   width: 70%;
   min-width: 20ch;
   border: 3px solid rebeccapurple;
@@ -82,7 +83,7 @@ li {
 }
 
 li:hover {
-  filter: opacity(70%);
+  filter: opacity(170%);
 }
 
 ul {
