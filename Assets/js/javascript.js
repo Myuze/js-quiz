@@ -18,6 +18,7 @@ var timer = {
   startTime: 120,
   currentTimeLeft: NaN,
   secToSubtract: 5,
+  timerInterval: Object,
 
   // Display timer as "00:00" format
   formatTimer: function(timeInSeconds) {
@@ -58,19 +59,20 @@ var timer = {
   },
   
   startTimer: function() {
-    var timerInterval = setInterval(function() {
+    this.timerInterval = setInterval(function() {
       timer.currentTimeLeft--;
-
+      console.log(timer.currentTimeLeft)
+  
       var formattedTime = timer.formatTimer(timer.currentTimeLeft);
       
       timerEl.textContent = `Time: ${formattedTime}`;
-
+  
       if(timer.currentTimeLeft < 1) {
-        clearInterval(timerInterval);
-
+        timer.endTimer();
+  
         main.endScreen();
       }
-
+  
     }, 1000);
   },
 
@@ -80,7 +82,7 @@ var timer = {
   },
 
   endTimer: function() {
-
+    clearInterval(this.timerInterval);
   }
 }
 
@@ -251,22 +253,30 @@ var score = {
   },
 
   recordInitials: function() {
-    var submitBtn = document.createElement('button');
-    var playerData = this.player;
-    submitBtn.textContent = 'Submit';
-    answerContainer.appendChild(submitBtn);
-
-    submitBtn.addEventListener('click', function() {
-    localStorage.setItem('player', JSON.stringify(playerData));
-    });
+    this.createForm();
   },
 
-  viewScoreScreen: function() {
+  createForm: function() {
+    var submitForm = document.createElement('form');
+    var initInput = document.createElement('input');
+    var submitBtn = document.createElement('button');
+    var playerData = this.player;
+    submitBtn.textContent = 'SUBMIT';
+    submitForm.appendChild(initInput);
+    submitForm.appendChild(submitBtn)
+    answerContainer.appendChild(submitForm);
 
+    submitBtn.addEventListener('click', function() {
+      localStorage.setItem('player', JSON.stringify(playerData));
+      });
+    },
+
+  viewScoreScreen: function() {
+    this.recordInitials()
   }
 }
 
-// Main Program
+// Main Program Object
 var main = {
   // Starting Page
   startScreen: function() {
@@ -279,6 +289,7 @@ var main = {
 
 
   endScreen: function() {
+    timer.endTimer();
     answerTitle.textContent = "QUIZ OVER!!!";
     setTimeout(function() {
       questionsGenerator.clearQuestAns();
