@@ -2,6 +2,7 @@
 
 // Quiz Page Elements
 var timerEl = document.getElementById('timer');
+var highScoreEl = document.getElementById('high-score');
 var questEl = document.getElementById('question');
 var answerContainer = document.getElementById('answer-container');
 var answerTitle = document.getElementById('answer-title');
@@ -71,7 +72,6 @@ var timer = {
 
   subtractTime: function() {
     this.currentTimeLeft -= this.secToSubtract;
-    console.log(this.secToSubtract)
   },
 
   endTimer: function() {
@@ -81,7 +81,6 @@ var timer = {
   delay: function(seconds, func) {
     var milliseconds = seconds * 1000;
     setTimeout(function() {
-      console.log(func)
       func();
     }, milliseconds);
   }
@@ -235,12 +234,12 @@ var questionsGenerator = {
   },
 
   getNextQuestion: function() {
+    questionsGenerator.clearAnswers();
     if (this.getRandomQuestions()) {
       questEl.textContent = this.currentQuestion['question'];
       this.createAnswerList();
       
     } else {
-      questEl.textContent = "";
       main.endScreen();
     };
   },
@@ -267,16 +266,15 @@ var questionsGenerator = {
       answerTitle.textContent = `WRONG!!! -${timer.secToSubtract}sec`;
     }
 
-    questionsGenerator.clearAnswers();
     this.getNextQuestion();
     
-    if (timer.currentTimeLeft > timer.secToSubtract + 1) {
-      timer.delay(1, questionsGenerator.clearAnsTitle);
-    }
+    // Delay clearing of Correct and Wrong notifications
+    timer.delay(2, questionsGenerator.clearAnsTitle);
+    
   },
 
   clearQuestAns: function() {
-    questEl.remove();
+    questEl.textContent = "";
     answerListEl.remove();
   },
 
@@ -295,8 +293,9 @@ var questionsGenerator = {
 var score = {
   qValue: 10,
 
-  show: function() {
+  showScoreScreen: function() {
     answerTitle.textContent = `Your Score Was: ${player['score']}`;
+    score.createForm();
   },
 
   addScore: function() {
@@ -308,7 +307,7 @@ var score = {
   },
 
   recordInitials: function() {
-    this.createForm();
+    
   },
 
   createForm: function() {
@@ -329,7 +328,6 @@ var score = {
     },
 
   viewScoreScreen: function() {
-    score.show();
     score.recordInitials();
   }
 }
@@ -352,6 +350,7 @@ var main = {
     startButton.textContent = 'START QUIZ';
     questEl.appendChild(startButton);
     startButton.addEventListener('click', this.gameStart);
+    highScoreEl.addEventListener('click', score.viewScoreScreen);
   },
 
   gameStart: function() {
@@ -359,7 +358,6 @@ var main = {
     timer.startTimer();
 
     answerListEl.addEventListener('click', function(e) {
-      console.log(e.target)
       questionsGenerator.verifyAnswer(e.target);
     });
 
@@ -367,9 +365,10 @@ var main = {
   },
 
   endScreen: function() {
+    questionsGenerator.clearQuestAns();
     timer.endTimer();
     answerTitle.textContent = "QUIZ OVER!!!";
-    timer.delay(3, score.viewScoreScreen);
+    timer.delay(3, score.showScoreScreen);
   },
 }
 
