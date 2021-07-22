@@ -1,9 +1,3 @@
-// When I select an answer the correct answer is highlighted green
-
-// IF I select the wrong answer, the correct answer is highlighted green
-// and the wrong answer turns red
-
-
 // I can save my initials and score
 
 // Quiz Page Elements
@@ -77,6 +71,7 @@ var timer = {
 
   subtractTime: function() {
     this.currentTimeLeft -= this.secToSubtract;
+    console.log(this.secToSubtract)
   },
 
   endTimer: function() {
@@ -94,6 +89,7 @@ var timer = {
 
 // Question Generator Object
 var questionsGenerator = {
+  currentQuestion: {},
 
   // Array of Question dictionaries
   questions: [
@@ -200,18 +196,11 @@ var questionsGenerator = {
     }
   ],
 
-  gameStart: function() {
-    timer.initTimer();
-    timer.startTimer();
-
-    questionsGenerator.getRandomQuestions();
-  },
-
   // Create answer list elements then shuffle
-  createAnswerList: function(questionDict) {
+  createAnswerList: function() {
     var ansList = [];
 
-    Object.entries(questionDict).forEach(entry => {
+    Object.entries(this.currentQuestion).forEach(entry => {
       if (entry[0] == 'answer') {
         ansList.push(entry[1]);
 
@@ -245,16 +234,44 @@ var questionsGenerator = {
     return array;
   },
 
+  getNextQuestion: function() {
+    if (this.getRandomQuestions()) {
+      questEl.textContent = this.currentQuestion['question'];
+      this.createAnswerList();
+      
+    } else {
+      questEl.textContent = "";
+      main.endScreen();
+    };
+  },
+
   getRandomQuestions: function() {
     var randQ = this.questions.splice(Math.floor(Math.random() * this.questions.length), 1);
 
     if (randQ[0]) {
-      questEl.textContent = randQ[0]['question'];
-      this.createAnswerList(randQ[0]);
-      answerEvents.addAnswerClickHandler(answerListEl, randQ[0]);
+      this.currentQuestion = randQ[0];
+      return true;
 
     } else {
-      main.endScreen();
+      return false;
+    }
+  },
+
+  verifyAnswer: function(ansTarget) {
+    if (ansTarget.textContent === this.currentQuestion['answer']) {
+      score.addScore();
+      answerTitle.textContent = "CORRECT!!!";
+
+    } else {
+      timer.subtractTime();
+      answerTitle.textContent = `WRONG!!! -${timer.secToSubtract}sec`;
+    }
+
+    questionsGenerator.clearAnswers();
+    this.getNextQuestion();
+    
+    if (timer.currentTimeLeft > timer.secToSubtract + 1) {
+      timer.delay(1, questionsGenerator.clearAnsTitle);
     }
   },
 
@@ -271,28 +288,6 @@ var questionsGenerator = {
     while (answerListEl.firstChild) {
       answerListEl.removeChild(answerListEl.firstChild);
     }
-  }
-}
-
-// Object to create event listeners to answers in list
-var answerEvents = {
-  addAnswerClickHandler: function(ansElem, question) {
-    ansElem.addEventListener('click', function(e) {
-      if (e.target.textContent === question['answer']) {
-        score.addScore();
-        questionsGenerator.clearAnswers();
-        questionsGenerator.getRandomQuestions();
-        answerTitle.textContent = "CORRECT!!!";
-
-      } else {
-        timer.subtractTime();
-        answerTitle.textContent = `WRONG!!! -${timer.secToSubtract}sec`;
-      }
-      
-      if (timer.currentTimeLeft > timer.secToSubtract + 1) {
-        timer.delay(1, questionsGenerator.clearAnsTitle);
-      }
-    });
   }
 }
 
@@ -334,7 +329,6 @@ var score = {
     },
 
   viewScoreScreen: function() {
-    questionsGenerator.clearQuestAns();
     score.show();
     score.recordInitials();
   }
@@ -357,9 +351,20 @@ var main = {
     startButton.classList.add('start');
     startButton.textContent = 'START QUIZ';
     questEl.appendChild(startButton);
-    startButton.addEventListener('click', questionsGenerator.gameStart);
+    startButton.addEventListener('click', this.gameStart);
   },
 
+  gameStart: function() {
+    timer.initTimer();
+    timer.startTimer();
+
+    answerListEl.addEventListener('click', function(e) {
+      console.log(e.target)
+      questionsGenerator.verifyAnswer(e.target);
+    });
+
+    questionsGenerator.getNextQuestion();
+  },
 
   endScreen: function() {
     timer.endTimer();
