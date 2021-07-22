@@ -318,11 +318,16 @@ var score = {
       player.playerName = initalInput.value;
       console.log(initalInput.value)
       localStorage.setItem('player', JSON.stringify(playerData));
+      score.viewScoreScreen();
       });
     },
 
   viewScoreScreen: function() {
     console.log("VIEW SCORESCREEN")
+    questionsGenerator.clearQuestAns();
+    // Create a list of high scores based on highScoreArray
+      // Create List elements
+      //
   }
 }
 
