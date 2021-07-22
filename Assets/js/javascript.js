@@ -233,21 +233,17 @@ var answerEvents = {
 // Score Object to track and store scores
 var score = {
   qValue: 10,
-  player: {
-    playerInitials: "",
-    playerScore: 0
-  },
 
   show: function() {
-    answerTitle.textContent = `Your Score Was: ${this.player['playerScore']}`;
+    answerTitle.textContent = `Your Score Was: ${player['score']}`;
   },
 
   addScore: function() {
-    this.player['playerScore'] += this.qValue;
+    player['score'] += this.qValue;
   },
 
   resetScore: function() {
-    this.score = 0;
+    player.score = 0;
   },
 
   recordInitials: function() {
@@ -256,12 +252,14 @@ var score = {
 
   createForm: function() {
     var submitForm = document.createElement('form');
-    var initInput = document.createElement('input');
+    var initalInput = document.createElement('input');
     var submitBtn = document.createElement('button');
-    var playerData = this.player;
+    var playerData = player.getData;
     submitBtn.textContent = 'SUBMIT';
-    submitForm.appendChild(initInput);
-    submitForm.appendChild(submitBtn)
+    initalInput.setAttribute('type', 'text');
+    initalInput.setAttribute('placeholder', 'Enter Initials');
+    submitForm.appendChild(initalInput);
+    submitForm.appendChild(submitBtn);
     answerContainer.appendChild(submitForm);
 
     submitBtn.addEventListener('click', function() {
@@ -274,6 +272,15 @@ var score = {
     this.show();
     this.recordInitials();
   }
+}
+
+var player = {
+  playerName: "",
+  score: 0,
+
+  getData: function() {
+    //Provide player data
+  },
 }
 
 // Main Program Object
