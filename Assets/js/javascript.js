@@ -222,7 +222,7 @@ var questionsGenerator = {
   },
 
   getNextQuestion: function() {
-    questionsGenerator.clearAnswers();
+    ui.clearAnswers();
     if (this.getRandomQuestions()) {
       questEl.textContent = this.currentQuestion['question'];
       this.createAnswerList();
@@ -258,35 +258,18 @@ var questionsGenerator = {
     this.getNextQuestion();
     
     // Delay clearing of Correct and Wrong notifications
-    timer.delay(2, questionsGenerator.clearAnsTitle);
+    timer.delay(2, ui.clearAnsTitle);
     
-  },
-
-  clearQuestAns: function() {
-    questEl.textContent = "";
-    this.clearAnswers();
-  },
-
-  clearAnsTitle: function() {
-    answerTitle.textContent = "";
-  },
-
-  clearAnswers: function() {
-    while (answerListEl.firstChild) {
-      answerListEl.removeChild(answerListEl.firstChild);
-    }
   }
 }
 
 // Score Object to track and store scores
 var score = {
-  qValue: 10,
-  highScoreList: [], // Point value of questions
+  qValue: 10, // Point value of questions
+  highScoreList: [], 
 
   showScoreScreen: function() {
-    answerTitle.textContent = `Your Score Was: ${player['score']}`;
-    score.createForm();
-    score.viewScoreScreen();
+    ui.createShowScoreScreen();
   },
 
   addScore: function() {
@@ -294,6 +277,8 @@ var score = {
   },
 
   addPlayer: function() {
+    
+    console.log(initalInput.value)
     return this.highScoreList.push(player);
   },
 
@@ -301,33 +286,18 @@ var score = {
     player.score = 0;
   },
 
-  // Create Submit Initials Form
-  createForm: function() {
-    var submitForm = document.createElement('form');
-    var initalInput = document.createElement('input');
-    var submitBtn = document.createElement('button');
-    var playerData = player.getData();
-    submitBtn.textContent = 'SUBMIT';
-    initalInput.setAttribute('type', 'text');
-    initalInput.setAttribute('placeholder', 'Enter Initials');
-    submitForm.appendChild(initalInput);
-    submitForm.appendChild(submitBtn);
-    answerContainer.appendChild(submitForm);
-
-    submitBtn.addEventListener('click', function() {
-      player.playerName = initalInput.value;
-      console.log(initalInput.value)
-      localStorage.setItem('player', JSON.stringify(playerData));
-      score.viewScoreScreen();
-      });
-    },
-
   viewScoreScreen: function() {
-    console.log("VIEW SCORESCREEN")
-    questionsGenerator.clearQuestAns();
+    ui.createHighscoreScreen();
+    // Create Clear Highscores button
     // Create a list of high scores based on highScoreArray
       // Create List elements
       //
+   this.highScoreList = localStorage.getItem('highScoreList');
+    console.log(JSON.parse(this.highScoreList))
+  },
+
+  clearHighScores: function() {
+    localStorage.setItem('highScoreList', {});
   }
 }
 
@@ -340,16 +310,116 @@ var player = {
   },
 }
 
+var ui = {
+  currentScreen: '',
+
+  createStartScreen: function() {
+    if (this.currentScreen == 'startScreen') {
+      this.cl
+      return;
+
+    } else {
+      this.clearQuestAns();
+      var startButton = document.createElement('button');
+      startButton.classList.add('start');
+      startButton.textContent = 'START QUIZ';
+      questEl.appendChild(startButton);
+      answerTitle.textContent = "Answer as many questions as possible within 2 minutes."
+      startButton.addEventListener('click', main.gameStart);
+      highScoreEl.addEventListener('click', score.viewScoreScreen);
+
+      this.currentScreen = 'startScreen'
+    }
+
+  },
+
+  createHighscoreScreen: function() {
+    if (this.currentScreen == 'highScoreScreen') {
+      return;
+
+    } else {
+      ui.clearQuestAns();
+      timer.endTimer();
+      answerTitle.textContent = "Current Highscores:"
+      
+      // Create Go Back Button
+      var backBtn = document.createElement('button');
+  
+      backBtn.classList.add('back-btn');
+      backBtn.textContent = 'BACK';
+      answerContainer.appendChild(backBtn);
+      
+      backBtn.addEventListener('click', function() {
+        ui.clearQuestAns();
+        main.startScreen();
+      });
+
+      this.currentScreen = 'highScoreScreen'
+    }
+  },
+
+  createShowScoreScreen: function() {
+    if (this.currentScreen == 'showScoreScreen') {
+      return;
+
+    } else {
+      ui.clearQuestAns();
+      var submitForm = document.createElement('form');
+      var initalInput = document.createElement('input');
+      var submitBtn = document.createElement('button');
+      
+      // Build Inital Input and Submit button
+      answerTitle.textContent = `Your Score Was: ${player['score']}`;
+      submitBtn.textContent = 'SUBMIT';
+      initalInput.setAttribute('type', 'text');
+      initalInput.setAttribute('placeholder', 'Enter Initials');
+      submitForm.appendChild(initalInput);
+      submitForm.appendChild(submitBtn);
+      answerContainer.appendChild(submitForm);
+  
+      // Add Submit Button click listener
+      submitBtn.addEventListener('click', function() {
+        player.playerName = initalInput.value;
+        score.addPlayer();
+        score.viewScoreScreen();
+        this.clearBackButton();
+        });
+
+        this.currentScreen = 'showScoreScreen'
+    }
+  },
+
+  clearQuestAns: function() {
+    this.clearQuest();
+    this.clearAnsTitle();
+    this.clearAnswers();
+  },
+
+  clearQuest: function() {
+    questEl.textContent = "";
+  },
+
+  clearAnsTitle: function() {
+    answerTitle.textContent = "";
+  },
+
+  clearAnswers: function() {
+    while (answerListEl.firstChild) {
+      answerListEl.removeChild(answerListEl.firstChild);
+    }
+  },
+
+  clearBackButton() {
+    console.log(answerContainer.children)
+    answerContainer.children.removeChild('back-btn');
+  }
+}
+
 // Main Program Object
 var main = {
   // Starting Page
   startScreen: function() {
-    var startButton = document.createElement('button');
-    startButton.classList.add('start');
-    startButton.textContent = 'START QUIZ';
-    questEl.appendChild(startButton);
-    startButton.addEventListener('click', this.gameStart);
-    highScoreEl.addEventListener('click', score.viewScoreScreen);
+    ui.createStartScreen();
   },
 
   // Initalize game start, and generate questions
@@ -357,7 +427,7 @@ var main = {
     timer.initTimer();
     timer.startTimer();
 
-    questionsGenerator.clearAnsTitle();
+    ui.clearAnsTitle();
 
     answerListEl.addEventListener('click', function(e) {
       questionsGenerator.verifyAnswer(e.target);
@@ -368,7 +438,7 @@ var main = {
 
   // End of quiz flow, record high scores
   endScreen: function() {
-    questionsGenerator.clearQuestAns();
+    ui.clearQuestAns();
     timer.endTimer();
     questEl.textContent = "QUIZ OVER!!!";
     timer.delay(3, score.showScoreScreen);
