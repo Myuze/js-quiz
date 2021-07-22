@@ -1,5 +1,3 @@
-// I can save my initials and score
-
 // Quiz Page Elements
 var timerEl = document.getElementById('timer');
 var highScoreEl = document.getElementById('high-score');
@@ -61,9 +59,9 @@ var timer = {
       
       timerEl.textContent = `Time: ${formattedTime}`;
   
+      // Stop the timer and go to the end screen afte time runs out
       if(timer.currentTimeLeft < 1) {
         timer.endTimer();
-  
         main.endScreen();
       }
   
@@ -95,12 +93,12 @@ var questionsGenerator = {
 
     // Dictionaries of question and answers
     {
-      question: "Which of the following is JSON most like?",
+      question: 'What does the "O" JSON stand for?',
       answer: "Object",
       wAnswer: [
-        "Dictionary",
-        "Function",
-        "Array"
+        "Online",
+        "Obfuscation",
+        "Optical"
       ],
     },
   
@@ -110,16 +108,6 @@ var questionsGenerator = {
       wAnswer: [
         "String",
         "Number",
-        "Bool",
-      ]
-    },
-
-    {
-      question: "What can be considered an integer?",
-      answer: "Number",
-      wAnswer: [
-        "String",
-        "Object",
         "Bool",
       ]
     },
@@ -135,7 +123,7 @@ var questionsGenerator = {
     },
 
     {
-      question: "What is not a property of a background",
+      question: "What is NOT a property of a background?",
       answer: "background-action",
       wAnswer: [
         "margin",
@@ -256,6 +244,7 @@ var questionsGenerator = {
     }
   },
 
+  // Verify answer, if the answer is correct add score and -5 seconds if wrong
   verifyAnswer: function(ansTarget) {
     if (ansTarget.textContent === this.currentQuestion['answer']) {
       score.addScore();
@@ -291,7 +280,7 @@ var questionsGenerator = {
 
 // Score Object to track and store scores
 var score = {
-  qValue: 10,
+  qValue: 10, // Point value of questions
 
   showScoreScreen: function() {
     answerTitle.textContent = `Your Score Was: ${player['score']}`;
@@ -314,7 +303,7 @@ var score = {
     var submitForm = document.createElement('form');
     var initalInput = document.createElement('input');
     var submitBtn = document.createElement('button');
-    var playerData = player.getData;
+    var playerData = player.getData();
     submitBtn.textContent = 'SUBMIT';
     initalInput.setAttribute('type', 'text');
     initalInput.setAttribute('placeholder', 'Enter Initials');
@@ -323,6 +312,8 @@ var score = {
     answerContainer.appendChild(submitForm);
 
     submitBtn.addEventListener('click', function() {
+      player.playerName = initalInput.value;
+      console.log(initalInput.value)
       localStorage.setItem('player', JSON.stringify(playerData));
       });
     },
@@ -337,7 +328,7 @@ var player = {
   score: 0,
 
   getData: function() {
-    //Provide player data
+    return player;
   },
 }
 
@@ -357,6 +348,8 @@ var main = {
   gameStart: function() {
     timer.initTimer();
     timer.startTimer();
+
+    questionsGenerator.clearAnsTitle();
 
     answerListEl.addEventListener('click', function(e) {
       questionsGenerator.verifyAnswer(e.target);
