@@ -7,4 +7,4 @@ Answer as many questions as possible within 2 minutes.
   - You will lose 5 seconds per wrong answer.
   - Enter your initials and record your high score!
 
-![](Assets\img\js-quiz.JPG)
+![](.\Assets\img\js-quiz.JPG)
