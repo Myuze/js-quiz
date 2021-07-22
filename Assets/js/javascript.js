@@ -264,7 +264,7 @@ var questionsGenerator = {
 
   clearQuestAns: function() {
     questEl.textContent = "";
-    answerListEl.remove();
+    this.clearAnswers();
   },
 
   clearAnsTitle: function() {
@@ -280,25 +280,28 @@ var questionsGenerator = {
 
 // Score Object to track and store scores
 var score = {
-  qValue: 10, // Point value of questions
+  qValue: 10,
+  highScoreList: [], // Point value of questions
 
   showScoreScreen: function() {
     answerTitle.textContent = `Your Score Was: ${player['score']}`;
     score.createForm();
+    score.viewScoreScreen();
   },
 
   addScore: function() {
     player['score'] += this.qValue;
   },
 
+  addPlayer: function() {
+    return this.highScoreList.push(player);
+  },
+
   resetScore: function() {
     player.score = 0;
   },
 
-  recordInitials: function() {
-    
-  },
-
+  // Create Submit Initials Form
   createForm: function() {
     var submitForm = document.createElement('form');
     var initalInput = document.createElement('input');
@@ -319,7 +322,7 @@ var score = {
     },
 
   viewScoreScreen: function() {
-    score.recordInitials();
+    console.log("VIEW SCORESCREEN")
   }
 }
 
