@@ -353,6 +353,7 @@ var main = {
     highScoreEl.addEventListener('click', score.viewScoreScreen);
   },
 
+  // Initalize game start, and generate questions
   gameStart: function() {
     timer.initTimer();
     timer.startTimer();
@@ -364,10 +365,11 @@ var main = {
     questionsGenerator.getNextQuestion();
   },
 
+  // End of quiz flow, record high scores
   endScreen: function() {
     questionsGenerator.clearQuestAns();
     timer.endTimer();
-    answerTitle.textContent = "QUIZ OVER!!!";
+    questEl.textContent = "QUIZ OVER!!!";
     timer.delay(3, score.showScoreScreen);
   },
 }
