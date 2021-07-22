@@ -15,7 +15,7 @@ var answerListEl = document.getElementById('answer-list');
 
 // Timer Object
 var timer = {
-  startTime: 8,
+  startTime: 120,
   currentTimeLeft: NaN,
   secToSubtract: 5,
   timerInterval: Object,
@@ -81,6 +81,14 @@ var timer = {
 
   endTimer: function() {
     clearInterval(this.timerInterval);
+  },
+
+  delay: function(seconds, func) {
+    var milliseconds = seconds * 1000;
+    setTimeout(function() {
+      console.log(func)
+      func();
+    }, milliseconds);
   }
 }
 
@@ -138,6 +146,56 @@ var questionsGenerator = {
         "margin",
         "color",
         "background-size",
+      ]
+    },
+
+    {
+      question: "Commonly used data types DO NOT include:",
+      answer: "alerts",
+      wAnswer: [
+        "strings",
+         "booleans",
+          "numbers"
+      ]
+    },
+
+    {
+      question: "The condition in an if / else statement is enclosed within ____.",
+      answer: "parentheses",
+      wAnswer: [
+        "quotes",
+        "curly brackets",
+        "square brackets"
+      ]
+    },
+
+    {
+      question: "Arrays in JavaScript can be used to store ____.",
+      answer: "all of the above",
+      wAnswer: [
+        "numbers and strings",
+        "other arrays",
+        "booleans"
+      ],
+    },
+
+    {
+      question: "String values must be enclosed within ____ when being assigned to variables.",
+      answer: "quotes",
+      wAnswer: [
+        "commas",
+        "curly brackets",
+        "parentheses"
+      ]
+    },
+
+    {
+      question: "A very useful tool used during development and debugging for printing content to the debugger is:",
+      answer: "console.log",
+      wAnswer: [
+        "JavaScript",
+        "terminal / bash",
+        "for loops"
       ]
     }
   ],
@@ -205,6 +263,10 @@ var questionsGenerator = {
     answerListEl.remove();
   },
 
+  clearAnsTitle: function() {
+    answerTitle.textContent = "";
+  },
+
   clearAnswers: function() {
     while (answerListEl.firstChild) {
       answerListEl.removeChild(answerListEl.firstChild);
@@ -225,6 +287,10 @@ var answerEvents = {
       } else {
         timer.subtractTime();
         answerTitle.textContent = `WRONG!!! -${timer.secToSubtract}sec`;
+      }
+      
+      if (timer.currentTimeLeft > timer.secToSubtract + 1) {
+        timer.delay(1, questionsGenerator.clearAnsTitle);
       }
     });
   }
@@ -269,8 +335,8 @@ var score = {
 
   viewScoreScreen: function() {
     questionsGenerator.clearQuestAns();
-    this.show();
-    this.recordInitials();
+    score.show();
+    score.recordInitials();
   }
 }
 
@@ -298,9 +364,7 @@ var main = {
   endScreen: function() {
     timer.endTimer();
     answerTitle.textContent = "QUIZ OVER!!!";
-    setTimeout(function() {
-      score.viewScoreScreen();
-    }, 3000);
+    timer.delay(3, score.viewScoreScreen);
   },
 }
 
