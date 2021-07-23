@@ -281,24 +281,9 @@ var score = {
     this.highScoreList.push(player);
   },
 
-  storeHighScores: function() {
-    localStorage.setItem('highScoreList', JSON.stringify(this.highScoreList));
-  },
-
-  resetHighScoreList: function() {
-    this.highScoreList = [];
-    localStorage.setItem('highScoreList', this.highScoreList);
-    ui.clearPlayers();
-    answerTitle.textContent = 'No High Scores'
-  },
-
-  resetScore: function() {
-    player.score = 0;
-  },
-
-  viewScoreScreen: function() {
-    ui.createHighscoreScreen();
+  getCurrentScores: function() {
     if (localStorage.getItem('highScoreList')) {
+      console.log(localStorage.getItem('highScoreList'))
       this.highScoreList = JSON.parse(localStorage.getItem('highScoreList'));
       this.highScoreList.forEach(player => {
         var playerEl = document.createElement('li');
@@ -309,6 +294,33 @@ var score = {
     } else {
       answerTitle.textContent = 'No High Scores'
     }
+  },
+
+  storeHighScores: function() {
+    this.highScoreList.push(player);
+    console.log(this.highScoreList)
+
+    if (localStorage.getItem('highScoreList')) {
+      var existingScore = localStorage.getItem('highScoreList');
+      this.highScoreList.concat(existingScore);
+    }
+    localStorage.setItem('highScoreList', JSON.stringify(this.highScoreList));
+  },
+
+  resetHighScoreList: function() {
+    this.highScoreList = [];
+    localStorage.setItem('highScoreList', JSON.stringify(this.highScoreList));
+    ui.clearPlayers();
+    answerTitle.textContent = 'No High Scores'
+  },
+
+  resetScore: function() {
+    player.score = 0;
+  },
+
+  viewScoreScreen: function() {
+    ui.createHighscoreScreen();
+    score.getCurrentScores();
 
   },
 
@@ -336,6 +348,7 @@ var ui = {
 
     } else {
       this.clearQuestAns();
+      score.getCurrentScores();
       var startButton = document.createElement('button');
       startButton.classList.add('start');
       startButton.textContent = 'START QUIZ';
@@ -411,7 +424,6 @@ var ui = {
       submitBtn.addEventListener('click', function(e) {
         e.preventDefault();
         player.playerName = initalInput.value;
-        score.addPlayer();
         score.storeHighScores();
         score.viewScoreScreen();
         });
