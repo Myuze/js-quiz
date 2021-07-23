@@ -287,6 +287,7 @@ var score = {
   resetHighScoreList: function() {
     this.highScoreList = [];
     localStorage.setItem('highScoreList', this.highScoreList);
+    ui.clearPlayers();
   },
 
   resetScore: function() {
@@ -299,7 +300,8 @@ var score = {
       this.highScoreList = JSON.parse(localStorage.getItem('highScoreList'));
       this.highScoreList.forEach(player => {
         var playerEl = document.createElement('li');
-        playerEl.textContent = `${player.playerName}: Score: ${player.score}`;
+        playerEl.classList.add('player');
+        playerEl.textContent = `${player.playerName} Score: ${player.score}`;
         answerTitle.appendChild(playerEl);
       });
     } else {
@@ -327,7 +329,6 @@ var ui = {
 
   createStartScreen: function() {
     if (this.currentScreen == 'startScreen') {
-      this.clearQuestAns();
       return;
 
     } else {
@@ -350,7 +351,7 @@ var ui = {
       return;
 
     } else {
-      ui.clearQuestAns();
+      ui.clearSubmitButton();
       timer.endTimer();
       answerTitle.textContent = "Current Highscores:"
       
@@ -366,14 +367,14 @@ var ui = {
       resetBtn.textContent = 'CLEAR HIGHSCORES';
       answerContainer.appendChild(resetBtn);
       
-      backBtn.addEventListener('click', function() {
-        // ui.clearQuestAns();
+      backBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         main.startScreen();
       });
 
-      resetBtn.addEventListener('click', function() {
+      resetBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         score.resetHighScoreList();
-        ui.clearAnswers();
       });
 
       this.currentScreen = 'highScoreScreen'
@@ -407,8 +408,8 @@ var ui = {
         player.playerName = initalInput.value;
         score.addPlayer();
         score.storeHighScores();
-        ui.clearSubmitButton();
         score.viewScoreScreen();
+        // ui.clearSubmitButton();
         });
 
         this.currentScreen = 'showScoreScreen'
@@ -436,21 +437,45 @@ var ui = {
     }
   },
 
-  clearSubmitButton: function() {
-    var hasChild = answerContainer.querySelectorAll('.submit');
+  clearPlayers: function() {
+    var hasChild = answerContainer.querySelectorAll('.player');
+    
     if (hasChild.length == 0) {
       return;
+
     } else {
-      answerContainer.remove('.submit');
+      hasChild.forEach(child => {
+        if (child.classList.contains('.player'))
+          answerContainer.remove('.player');
+      });
+    }
+  },
+
+  clearSubmitButton: function() {
+    var hasChild = answerContainer.querySelectorAll('.submit');
+    
+    if (hasChild.length == 0) {
+      return;
+
+    } else {
+      hasChild.forEach(child => {
+        if (child.classList.contains('.submit'))
+          answerContainer.remove('.submit');
+      });
     }
   },
 
   clearBackButton: function() {
     var hasChild = answerContainer.querySelectorAll('.back-btn');
+
     if (hasChild.length == 0) {
       return;
+
     } else {
-      answerContainer.remove('.back-btn');
+      hasChild.forEach(child => {
+        if (child.classList.contains('.back-btn'))
+          answerContainer.remove('.back-btn');
+      });
     }
   }
 }
