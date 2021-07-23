@@ -80,6 +80,7 @@ li {
   min-width: 20ch;
   border: 3px solid rebeccapurple;
   border-radius: 0.3rem;
+  list-style-type: none;
 }
 
 li:hover {

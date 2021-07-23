@@ -295,7 +295,16 @@ var score = {
 
   viewScoreScreen: function() {
     ui.createHighscoreScreen();
-    this.highScoreList = JSON.parse(localStorage.getItem('highScoreList'));
+    if (localStorage.getItem('highScoreList')) {
+      this.highScoreList = JSON.parse(localStorage.getItem('highScoreList'));
+      this.highScoreList.forEach(player => {
+        var playerEl = document.createElement('li');
+        playerEl.textContent = `${player.playerName}: Score: ${player.score}`;
+        answerTitle.appendChild(playerEl);
+      });
+    } else {
+      answerTitle.textContent = 'No High Scores'
+    }
 
   },
 
@@ -364,11 +373,7 @@ var ui = {
 
       resetBtn.addEventListener('click', function() {
         score.resetHighScoreList();
-        answerContainer.childNodes.forEach(child => {
-          if(child == 'button') {
-            console.log(child)
-          }
-        })
+        ui.clearAnswers();
       });
 
       this.currentScreen = 'highScoreScreen'
@@ -412,6 +417,7 @@ var ui = {
     this.clearQuest();
     this.clearAnsTitle();
     this.clearAnswers();
+    this.clearBackButton();
   },
 
   clearQuest: function() {
@@ -430,12 +436,10 @@ var ui = {
 
   clearBackButton() {
     var hasChild = answerContainer.querySelectorAll('.back-btn');
-
-    console.log('hasChild: ', hasChild.length)
     if (hasChild.length == 0) {
       return;
     } else {
-      answerContainer.removeChild('.back-btn');
+      answerContainer.remove('.back-btn');
     }
   }
 }
