@@ -277,9 +277,16 @@ var score = {
   },
 
   addPlayer: function() {
-    
-    console.log(initalInput.value)
-    return this.highScoreList.push(player);
+    this.highScoreList.push(player);
+  },
+
+  storeHighScores: function() {
+    localStorage.setItem('highScoreList', JSON.stringify(this.highScoreList));
+  },
+
+  resetHighScoreList: function() {
+    this.highScoreList = [];
+    localStorage.setItem('highScoreList', this.highScoreList);
   },
 
   resetScore: function() {
@@ -288,12 +295,8 @@ var score = {
 
   viewScoreScreen: function() {
     ui.createHighscoreScreen();
-    // Create Clear Highscores button
-    // Create a list of high scores based on highScoreArray
-      // Create List elements
-      //
-   this.highScoreList = localStorage.getItem('highScoreList');
-    console.log(JSON.parse(this.highScoreList))
+    this.highScoreList = JSON.parse(localStorage.getItem('highScoreList'));
+
   },
 
   clearHighScores: function() {
@@ -342,16 +345,30 @@ var ui = {
       timer.endTimer();
       answerTitle.textContent = "Current Highscores:"
       
-      // Create Go Back Button
+      // Create Go Back and Reset Buttons
       var backBtn = document.createElement('button');
+      var resetBtn = document.createElement('button');
   
       backBtn.classList.add('back-btn');
       backBtn.textContent = 'BACK';
       answerContainer.appendChild(backBtn);
+
+      resetBtn.classList.add('reset-btn');
+      resetBtn.textContent = 'CLEAR HIGHSCORES';
+      answerContainer.appendChild(resetBtn);
       
       backBtn.addEventListener('click', function() {
         ui.clearQuestAns();
         main.startScreen();
+      });
+
+      resetBtn.addEventListener('click', function() {
+        score.resetHighScoreList();
+        answerContainer.childNodes.forEach(child => {
+          if(child == 'button') {
+            console.log(child)
+          }
+        })
       });
 
       this.currentScreen = 'highScoreScreen'
@@ -364,6 +381,7 @@ var ui = {
 
     } else {
       ui.clearQuestAns();
+      ui.clearBackButton();
       var submitForm = document.createElement('form');
       var initalInput = document.createElement('input');
       var submitBtn = document.createElement('button');
@@ -378,11 +396,12 @@ var ui = {
       answerContainer.appendChild(submitForm);
   
       // Add Submit Button click listener
-      submitBtn.addEventListener('click', function() {
+      submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         player.playerName = initalInput.value;
         score.addPlayer();
+        score.storeHighScores();
         score.viewScoreScreen();
-        this.clearBackButton();
         });
 
         this.currentScreen = 'showScoreScreen'
@@ -410,8 +429,12 @@ var ui = {
   },
 
   clearBackButton() {
-    console.log(answerContainer.children)
-    answerContainer.children.removeChild('back-btn');
+    var hasChild = answerContainer.querySelectorAll('.back-btn');
+
+    console.log('hasChild: ', hasChild.length)
+    if (hasChild.length == 0) {
+      answerContainer.removeChild('.back-btn');
+    }
   }
 }
 
