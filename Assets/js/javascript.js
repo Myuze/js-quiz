@@ -327,7 +327,7 @@ var ui = {
 
   createStartScreen: function() {
     if (this.currentScreen == 'startScreen') {
-      this.cl
+      this.clearQuestAns();
       return;
 
     } else {
@@ -367,7 +367,7 @@ var ui = {
       answerContainer.appendChild(resetBtn);
       
       backBtn.addEventListener('click', function() {
-        ui.clearQuestAns();
+        // ui.clearQuestAns();
         main.startScreen();
       });
 
@@ -394,6 +394,7 @@ var ui = {
       // Build Inital Input and Submit button
       answerTitle.textContent = `Your Score Was: ${player['score']}`;
       submitBtn.textContent = 'SUBMIT';
+      submitBtn.classList.add('submit');
       initalInput.setAttribute('type', 'text');
       initalInput.setAttribute('placeholder', 'Enter Initials');
       submitForm.appendChild(initalInput);
@@ -406,6 +407,7 @@ var ui = {
         player.playerName = initalInput.value;
         score.addPlayer();
         score.storeHighScores();
+        ui.clearSubmitButton();
         score.viewScoreScreen();
         });
 
@@ -434,7 +436,16 @@ var ui = {
     }
   },
 
-  clearBackButton() {
+  clearSubmitButton: function() {
+    var hasChild = answerContainer.querySelectorAll('.submit');
+    if (hasChild.length == 0) {
+      return;
+    } else {
+      answerContainer.remove('.submit');
+    }
+  },
+
+  clearBackButton: function() {
     var hasChild = answerContainer.querySelectorAll('.back-btn');
     if (hasChild.length == 0) {
       return;
