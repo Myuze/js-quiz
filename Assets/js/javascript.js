@@ -203,6 +203,7 @@ var questionsGenerator = {
     shuffledAnswers.forEach(entry => {
       var ansItem = document.createElement('li');
       var ansText = document.createTextNode(entry);
+      ansItem.classList.add('ans');
       ansItem.appendChild(ansText);
       answerListEl.appendChild(ansItem);
     });
@@ -288,6 +289,7 @@ var score = {
     this.highScoreList = [];
     localStorage.setItem('highScoreList', this.highScoreList);
     ui.clearPlayers();
+    answerTitle.textContent = 'No High Scores'
   },
 
   resetScore: function() {
@@ -301,7 +303,7 @@ var score = {
       this.highScoreList.forEach(player => {
         var playerEl = document.createElement('li');
         playerEl.classList.add('player');
-        playerEl.textContent = `${player.playerName} Score: ${player.score}`;
+        playerEl.textContent = `${player.playerName} score: ${player.score}`;
         answerTitle.appendChild(playerEl);
       });
     } else {
@@ -312,6 +314,7 @@ var score = {
 
   clearHighScores: function() {
     localStorage.setItem('highScoreList', {});
+    ui.clearPlayers();
   }
 }
 
@@ -375,6 +378,7 @@ var ui = {
       resetBtn.addEventListener('click', function(e) {
         e.preventDefault();
         score.resetHighScoreList();
+        ui.clearResetButton();
       });
 
       this.currentScreen = 'highScoreScreen'
@@ -394,6 +398,7 @@ var ui = {
       
       // Build Inital Input and Submit button
       answerTitle.textContent = `Your Score Was: ${player['score']}`;
+      initalInput.classList.add('submit');
       submitBtn.textContent = 'SUBMIT';
       submitBtn.classList.add('submit');
       initalInput.setAttribute('type', 'text');
@@ -409,7 +414,6 @@ var ui = {
         score.addPlayer();
         score.storeHighScores();
         score.viewScoreScreen();
-        // ui.clearSubmitButton();
         });
 
         this.currentScreen = 'showScoreScreen'
@@ -421,6 +425,7 @@ var ui = {
     this.clearAnsTitle();
     this.clearAnswers();
     this.clearBackButton();
+    this.clearResetButton();
   },
 
   clearQuest: function() {
@@ -432,51 +437,33 @@ var ui = {
   },
 
   clearAnswers: function() {
-    while (answerListEl.firstChild) {
-      answerListEl.removeChild(answerListEl.firstChild);
-    }
+    document.querySelectorAll('.ans').forEach(function(a){
+      a.remove();
+    });
   },
 
   clearPlayers: function() {
-    var hasChild = answerContainer.querySelectorAll('.player');
-    
-    if (hasChild.length == 0) {
-      return;
-
-    } else {
-      hasChild.forEach(child => {
-        if (child.classList.contains('.player'))
-          answerContainer.remove('.player');
-      });
-    }
+    document.querySelectorAll('.player').forEach(function(a){
+      a.remove();
+    });
   },
 
   clearSubmitButton: function() {
-    var hasChild = answerContainer.querySelectorAll('.submit');
-    
-    if (hasChild.length == 0) {
-      return;
-
-    } else {
-      hasChild.forEach(child => {
-        if (child.classList.contains('.submit'))
-          answerContainer.remove('.submit');
-      });
-    }
+    document.querySelectorAll('.submit').forEach(function(a){
+      a.remove();
+    });
   },
 
   clearBackButton: function() {
-    var hasChild = answerContainer.querySelectorAll('.back-btn');
+    document.querySelectorAll('.back-btn').forEach(function(a){
+      a.remove();
+    });
+  },
 
-    if (hasChild.length == 0) {
-      return;
-
-    } else {
-      hasChild.forEach(child => {
-        if (child.classList.contains('.back-btn'))
-          answerContainer.remove('.back-btn');
-      });
-    }
+  clearResetButton: function() {
+    document.querySelectorAll('.reset-btn').forEach(function(a){
+      a.remove();
+    });
   }
 }
 
