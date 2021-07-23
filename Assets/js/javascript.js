@@ -433,6 +433,8 @@ var ui = {
 
     console.log('hasChild: ', hasChild.length)
     if (hasChild.length == 0) {
+      return;
+    } else {
       answerContainer.removeChild('.back-btn');
     }
   }
