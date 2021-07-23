@@ -308,8 +308,7 @@ var score = {
   },
 
   resetHighScoreList: function() {
-    this.highScoreList = [];
-    localStorage.setItem('highScoreList', JSON.stringify(this.highScoreList));
+    localStorage.removeItem('highScoreList');
     ui.clearPlayers();
     answerTitle.textContent = 'No High Scores'
   },
