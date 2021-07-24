@@ -87,6 +87,7 @@ var timer = {
 // Question Generator Object
 var questionsGenerator = {
   currentQuestion: {},
+  questionsCopy: [],
 
   // Array of Question dictionaries
   questions: [
@@ -183,6 +184,12 @@ var questionsGenerator = {
     }
   ],
 
+  copyQuestions: function() {
+    console.log('Questions Copied: ')
+    this.questionsCopy = JSON.parse(JSON.stringify(this.questions));
+    console.log(this.questionsCopy)
+  },
+
   // Create answer list elements then shuffle
   createAnswerList: function() {
     var ansList = [];
@@ -234,7 +241,8 @@ var questionsGenerator = {
   },
 
   getRandomQuestions: function() {
-    var randQ = this.questions.splice(Math.floor(Math.random() * this.questions.length), 1);
+    console.log(this.questionsCopy)
+    var randQ = this.questionsCopy.splice(Math.floor(Math.random() * this.questionsCopy.length), 1);
 
     if (randQ[0]) {
       this.currentQuestion = randQ[0];
@@ -257,7 +265,7 @@ var questionsGenerator = {
     }
 
     this.getNextQuestion();
-    
+
     // Delay clearing of Correct and Wrong notifications
     timer.delay(2, ui.clearAnsTitle);
     
@@ -348,6 +356,7 @@ var ui = {
     } else {
       this.clearQuestAns();
       score.getCurrentScores();
+      questionsGenerator.copyQuestions();
       var startButton = document.createElement('button');
       startButton.classList.add('start');
       startButton.textContent = 'START QUIZ';
@@ -480,6 +489,8 @@ var ui = {
 
 // Main Program Object
 var main = {
+  session: 0,
+
   // Starting Page
   startScreen: function() {
     ui.createStartScreen();
@@ -487,16 +498,22 @@ var main = {
 
   // Initalize game start, and generate questions
   gameStart: function() {
+    
     timer.initTimer();
     timer.startTimer();
 
     ui.clearAnsTitle();
 
-    answerListEl.addEventListener('click', function(e) {
-      questionsGenerator.verifyAnswer(e.target);
-    });
+    console.log(main.session)
+
+    if (main.session == 0) {
+      answerListEl.addEventListener('click', function(e) {
+        questionsGenerator.verifyAnswer(e.target);
+      });
+    }
 
     questionsGenerator.getNextQuestion();
+    main.session += 1;
   },
 
   // End of quiz flow, record high scores
