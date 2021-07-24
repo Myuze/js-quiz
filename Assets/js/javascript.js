@@ -313,6 +313,7 @@ var score = {
   resetHighScoreList: function() {
     localStorage.removeItem('highScoreList');
     ui.clearPlayers();
+    this.highScoreList = [];
     answerTitle.textContent = 'No High Scores'
   },
 
@@ -323,12 +324,6 @@ var score = {
   viewScoreScreen: function() {
     ui.createHighscoreScreen();
     score.getCurrentScores();
-
-  },
-
-  clearHighScores: function() {
-    localStorage.setItem('highScoreList', {});
-    ui.clearPlayers();
   }
 }
 
