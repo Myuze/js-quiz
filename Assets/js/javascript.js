@@ -332,6 +332,7 @@ var score = {
   }
 }
 
+// Player Object to store player information
 var player = {
   playerName: "",
   score: 0,
@@ -341,6 +342,7 @@ var player = {
   },
 }
 
+// ui Object to create specified screens: Start, Highscores, and functions to clear elements, etc.
 var ui = {
   currentScreen: '',
 
