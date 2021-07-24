@@ -185,9 +185,7 @@ var questionsGenerator = {
   ],
 
   copyQuestions: function() {
-    console.log('Questions Copied: ')
     this.questionsCopy = JSON.parse(JSON.stringify(this.questions));
-    console.log(this.questionsCopy)
   },
 
   // Create answer list elements then shuffle
@@ -241,7 +239,6 @@ var questionsGenerator = {
   },
 
   getRandomQuestions: function() {
-    console.log(this.questionsCopy)
     var randQ = this.questionsCopy.splice(Math.floor(Math.random() * this.questionsCopy.length), 1);
 
     if (randQ[0]) {
@@ -291,7 +288,6 @@ var score = {
 
   getCurrentScores: function() {
     if (localStorage.getItem('highScoreList')) {
-      console.log(localStorage.getItem('highScoreList'))
       this.highScoreList = JSON.parse(localStorage.getItem('highScoreList'));
       this.highScoreList.forEach(player => {
         var playerEl = document.createElement('li');
@@ -306,7 +302,6 @@ var score = {
 
   storeHighScores: function() {
     this.highScoreList.push(player);
-    console.log(this.highScoreList)
 
     if (localStorage.getItem('highScoreList')) {
       var existingScore = localStorage.getItem('highScoreList');
@@ -503,8 +498,6 @@ var main = {
     timer.startTimer();
 
     ui.clearAnsTitle();
-
-    console.log(main.session)
 
     if (main.session == 0) {
       answerListEl.addEventListener('click', function(e) {
